@@ -1,0 +1,45 @@
+version: '2'
+services:
+    project:
+        image: yangping/genproject:0.1.2
+        container_name: genproject-project
+        volumes:
+            - ./project:/code
+        networks:
+            - genproject
+        ports:
+            - $PORT:$PORT
+
+    mysql:
+        image: mysql
+        hostname: mysql
+        container_name: genproject-mysqld
+        environment:
+            MYSQL_ROOT_PASSWORD: '111111'
+        volumes:
+            - ./db-dumps/mysql:/docker-entrypoint-initdb.d
+        networks:
+            - genproject
+
+    mongodb:
+        image: mongo
+        hostname: mongodb
+        container_name: genproject-mongod
+        networks:
+            - genproject
+
+    mongorestore:
+        image: mongo
+        hostname: mongorestore
+        container_name: genproject-mongorestore
+        volumes:
+            - ./db-dumps/mongo:/backup
+        depends_on:
+            - mongodb
+        networks:
+            - genproject
+        command: ["mongorestore", "-h", "mongodb", "-d", "MTD", "/backup/MTD"]
+
+
+networks:
+    genproject:
