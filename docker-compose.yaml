@@ -1,7 +1,7 @@
 version: '2'
 services:
     project:
-        image: yangping/genproject:0.1.2
+        image: yuanta11/genproject:0.1.2
         container_name: genproject-project
         volumes:
             - ./project:/code
@@ -39,6 +39,13 @@ services:
         networks:
             - genproject
         command: ["mongorestore", "-h", "mongodb", "-d", "MTD", "/backup/MTD"]
+
+    redis:
+        image: redis
+        hostname: redis
+        container_name: genproject-redis
+        networks:
+            - genproject
 
 
 networks:
